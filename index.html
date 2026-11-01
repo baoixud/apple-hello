@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Apple Hello</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    color: #f5f5f7;
+    font-family: "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI Variable Text", "Segoe UI", Helvetica, Arial, sans-serif;
+    font-feature-settings: "kern" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+    background: #000;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  header, main, .typebar, footer { position: relative; z-index: 1; }
+
+  /* headler */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    height: 52px;
+    padding: 0 24px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    background: rgba(29,29,31,.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .brand {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    color: #f5f5f7;
+    white-space: nowrap;
+  }
+
+  .controls { display: flex; align-items: center; gap: 20px; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 8px;
+    background: none;
+    color: rgba(255,255,255,.8);
+    border: 0;
+    border-radius: 6px;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: color .18s, background .18s;
+  }
+  .btn:hover { color: #fff; background: rgba(255,255,255,.06); }
+  .btn svg { width: 14px; height: 14px; }
+  .btn:hover { background: rgba(255,255,255,.14); }
+  .btn:active { transform: scale(.97); }
+  .btn:focus-visible { outline: 2px solid #8b8cf8; outline-offset: 2px; }
+
+  /* pop up smth*/
+  .dd { position: relative; }
+
+  .dd-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 10px 0 12px;
+    background: none;
+    color: rgba(255,255,255,.8);
+    border: 0;
+    border-radius: 6px;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: color .18s, background .18s;
+  }
+  .dd-btn:hover { color: #fff; background: rgba(255,255,255,.06); }
+  .dd-btn:focus-visible { outline: 2px solid #8b8cf8; outline-offset: 2px; }
+  .dd-btn .globe { width: 15px; height: 15px; color: rgba(255,255,255,.55); }
+  #ddLabel {
+    min-width: 0;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .dd-chev {
+    width: 10px;
+    height: 6px;
+    margin-left: 4px;
+    color: rgba(255,255,255,.5);
+    transition: transform .2s;
+  }
+  .dd.open .dd-chev { transform: rotate(180deg); }
+
+  .dd-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    background: rgba(28,28,31,.94);
+    backdrop-filter: blur(30px) saturate(140%);
+    -webkit-backdrop-filter: blur(30px) saturate(140%);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.6);
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-6px) scale(.98);
+    transform-origin: top right;
+    pointer-events: none;
+    transition: opacity .16s, transform .16s;
+  }
+  .dd.open .dd-panel {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .dd-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 46px;
+    padding: 0 14px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    color: rgba(255,255,255,.45);
+  }
+  .dd-search input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: 0;
+    outline: none;
+    color: #fff;
+    font: inherit;
+    font-size: 15px;
+  }
+  .dd-search input::placeholder { color: rgba(255,255,255,.35); }
+
+  .dd-list {
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    max-height: 340px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.2) transparent;
+  }
+  .dd-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 9px 10px;
+    border-radius: 9px;
+    font-size: 14px;
+    color: #d4d4da;
+    cursor: pointer;
+  }
+  .dd-item.active { background: rgba(255,255,255,.08); color: #fff; }
+  .dd-item .tick {
+    color: #a5b4fc;
+    font-size: 13px;
+    visibility: hidden;
+  }
+  .dd-item[aria-selected="true"] .tick { visibility: visible; }
+  .dd-empty {
+    padding: 16px 10px;
+    font-size: 13px;
+    color: rgba(255,255,255,.4);
+  }
+
+  .dd-foot {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 9px 14px;
+    border-top: 1px solid rgba(255,255,255,.08);
+    font-size: 11px;
+    color: rgba(255,255,255,.4);
+  }
+  .kbd {
+    display: inline-grid;
+    place-items: center;
+    min-width: 20px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 5px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.1);
+    font-size: 11px;
+    color: rgba(255,255,255,.6);
+  }
+
+  main {
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    min-height: 0;
+  }
+
+  .stage {
+    width: min(92vw, 960px);
+    aspect-ratio: 2.8 / 1;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+
+  .stage .msg {
+    font-size: 13px;
+    color: rgba(255,255,255,.4);
+  }
+
+  svg.hello-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    fill: none;
+  }
+
+  svg.hello-svg path {
+    fill: none;
+    stroke: #fff;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  svg.hello-svg path.draw {
+    animation: draw 1s cubic-bezier(.45,.05,.55,.95) forwards;
+    opacity: 1;
+  }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+
+  svg.typed text {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 4;
+    stroke-linejoin: round;
+    stroke-dasharray: 5000;
+    stroke-dashoffset: 5000;
+  }
+  svg.typed.run text {
+    animation:
+      wordDraw 2.4s cubic-bezier(.45,.05,.55,.95) forwards,
+      wordFill .9s ease 2.1s forwards;
+  }
+  @keyframes wordDraw { to { stroke-dashoffset: 0; } }
+  @keyframes wordFill { to { fill: #fff; } }
+
+  .typebar {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 4px 24px 8px;
+  }
+  .typebar input {
+    width: min(92vw, 520px);
+    padding: 12px 18px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 999px;
+    color: #fff;
+    font: inherit;
+    font-size: 15px;
+    outline: none;
+    transition: border-color .18s, background .18s;
+  }
+  .typebar input::placeholder { color: rgba(255,255,255,.35); }
+  .typebar input:focus {
+    border-color: rgba(139,140,248,.8);
+    background: rgba(255,255,255,.09);
+  }
+
+  footer {
+    padding: 8px 20px 18px;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.28);
+  }
+
+  .brand { font-size: 17px; font-weight: 600; letter-spacing: -.022em; }
+  .btn, .dd-btn { font-size: 13px; font-weight: 400; letter-spacing: -.01em; line-height: 1; }
+  .dd-item { font-size: 13px; letter-spacing: -.01em; }
+  .dd-search input { font-size: 14px; letter-spacing: -.01em; }
+  .dd-foot, .dd-empty { font-size: 12px; letter-spacing: -.005em; }
+  .typebar input { font-size: 15px; letter-spacing: -.01em; }
+  footer { font-size: 11px; letter-spacing: .08em; }
+
+  @media (max-width: 560px) {
+    header { padding: 14px 16px; }
+    .dd-btn { min-width: 160px; }
+    .dd-panel { width: min(300px, 90vw); }
+    .dd-foot span.hide-sm { display: none; }
+  }
+
+  .dd-grab, .dd-sheet-head, .dd-backdrop { display: none; }
+
+  @media (max-width: 700px) {
+    header {
+      height: auto;
+      z-index: auto;
+      min-height: calc(52px + env(safe-area-inset-top));
+      padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
+      background: rgba(29,29,31,.92);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+    .brand { font-size: 17px; }
+    .controls { gap: 8px; }
+
+    .btn, .dd-btn {
+      height: 44px;
+      min-height: 44px;
+      font-size: 17px;
+      padding: 0 12px;
+    }
+    .dd-btn { min-width: 0; }
+    .dd-btn .globe { width: 18px; height: 18px; }
+    .dd-chev { width: 12px; height: 7px; }
+
+    main { padding: 16px; }
+    .typebar { padding: 4px 16px calc(12px + env(safe-area-inset-bottom)); }
+    .typebar input { width: 100%; font-size: 16px; } /* 16 px */
+    footer { padding: 4px 16px calc(12px + env(safe-area-inset-bottom)); }
+
+    .dd-backdrop {
+      display: block;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s ease;
+      z-index: 40;
+    }
+    .dd-backdrop.show { opacity: 1; pointer-events: auto; }
+    body.sheet-open { overflow: hidden; }
+
+    .dd-panel {
+      position: fixed;
+      top: auto;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      max-height: 80vh;
+      max-height: 80svh;
+      border-radius: 14px 14px 0 0;
+      border: 0;
+      background: #1c1c1e;
+      box-shadow: 0 -12px 40px rgba(0,0,0,.5);
+      padding-bottom: env(safe-area-inset-bottom);
+      opacity: 1;
+      transform: translateY(102%);
+      transition: transform .34s cubic-bezier(.32,.72,0,1);
+      z-index: 50;
+    }
+    .dd.open .dd-panel { transform: none; }
+
+    .dd-grab {
+      display: block;
+      width: 36px;
+      height: 5px;
+      margin: 8px auto 0;
+      border-radius: 3px;
+      background: rgba(255,255,255,.28);
+    }
+    .dd-sheet-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px 0;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -.022em;
+    }
+    .dd-done {
+      min-height: 44px;
+      padding: 0 2px;
+      background: none;
+      border: 0;
+      color: #0a84ff;
+      font: inherit;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .dd-search {
+      height: 40px;
+      margin: 10px 16px 6px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 10px;
+      background: rgba(118,118,128,.24);
+      color: rgba(255,255,255,.55);
+    }
+    .dd-search input { font-size: 17px; }
+
+    .dd-list {
+      flex: 1 1 auto;
+      min-height: 0;
+      max-height: none;
+      padding: 0 16px 16px;
+    }
+    .dd-item {
+      min-height: 48px;
+      padding: 12px 4px;
+      font-size: 17px;
+      border-radius: 0;
+      border-bottom: .5px solid rgba(255,255,255,.1);
+    }
+    .dd-item:last-child { border-bottom: 0; }
+    .dd-item.active { background: none; color: #fff; }
+    .dd-item .tick { color: #0a84ff; font-size: 16px; }
+    .dd-foot { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">Apple Hello</div>
+  <div class="controls">
+    <div class="dd" id="dd">
+      <button class="dd-btn" id="ddBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="ddList">
+        <svg class="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/></svg>
+        <span id="ddLabel">English</span>
+        <svg class="dd-chev" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+      </button>
+
+      <div class="dd-panel" id="ddPanel">
+        <div class="dd-grab" aria-hidden="true"></div>
+        <div class="dd-sheet-head"><span>Language</span><button type="button" class="dd-done" id="ddDone">Done</button></div>
+        <label class="dd-search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="sr-only" style="position:absolute;left:-9999px">Search languages</span>
+          <input id="ddSearch" type="text" placeholder="Search languages" autocomplete="off" role="combobox" aria-expanded="true" aria-controls="ddList" aria-autocomplete="list" />
+        </label>
+        <ul class="dd-list" id="ddList" role="listbox" aria-labelledby="ddBtn"></ul>
+        <div class="dd-foot">
+          <span><span class="kbd">↑</span> <span class="kbd">↓</span> to move</span>
+          <span><span class="kbd">↵</span> to select</span>
+          <span class="hide-sm" style="margin-left:auto"><span class="kbd">Esc</span> to close</span>
+        </div>
+      </div>
+    </div>
+    <button class="btn" id="replay" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Replay</button>
+  </div>
+</header>
+
+<main>
+  <div class="stage" id="stage"></div>
+</main>
+
+<form class="typebar" id="typeForm" autocomplete="off">
+  <input id="word" type="text" placeholder="Type any word and press Enter…" maxlength="40" />
+</form>
+
+
+<div class="dd-backdrop" id="ddBackdrop"></div>
+
+<script>
+// languages
+const LANGS = {
+  en: "English", ar: "Arabic", bg: "Bulgarian", ca: "Catalan", cs: "Czech",
+  da: "Danish", de: "German", el: "Greek", es: "Spanish", fi: "Finnish",
+  fr: "French", he: "Hebrew", hi: "Hindi", hr: "Croatian", hu: "Hungarian",
+  id: "Indonesian", it: "Italian", ja: "Japanese", kk: "Kazakh", ko: "Korean",
+  ms: "Malay", nb: "Norwegian Bokmål", nl: "Dutch", pl: "Polish", pt: "Portuguese",
+  pt_BR: "Portuguese (Brazil)", ro: "Romanian", ru: "Russian", sk: "Slovak",
+  sv: "Swedish", th: "Thai", tr: "Turkish", uk: "Ukrainian", vi: "Vietnamese",
+  "zh-Hans": "Chinese (Simplified)", "zh-Hant": "Chinese (Traditional)",
+  zh_HK: "Chinese (Hong Kong)"
+};
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+const STAGGER_MS = 300;
+
+const stage     = document.getElementById("stage");
+const dd        = document.getElementById("dd");
+const ddBtn     = document.getElementById("ddBtn");
+const ddLabel   = document.getElementById("ddLabel");
+const ddSearch  = document.getElementById("ddSearch");
+const ddList    = document.getElementById("ddList");
+const replayBtn = document.getElementById("replay");
+const typeForm  = document.getElementById("typeForm");
+const wordInput = document.getElementById("word");
+const ddBackdrop = document.getElementById("ddBackdrop");
+const mobileMQ = window.matchMedia("(max-width: 700px)");
+
+const cache = {};
+let currentCode = "en";
+let visible = [];   
+let activeIndex = 0;
+
+/*pop up lemu */
+function renderList(query = "") {
+  const q = query.trim().toLowerCase();
+  visible = Object.entries(LANGS).filter(([code, label]) =>
+    !q || label.toLowerCase().includes(q) || code.toLowerCase().includes(q));
+
+  ddList.innerHTML = "";
+
+  if (visible.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "dd-empty";
+    empty.textContent = `No languages match “${query.trim()}”`;
+    ddList.appendChild(empty);
+    ddSearch.removeAttribute("aria-activedescendant");
+    return;
+  }
+
+  activeIndex = Math.min(activeIndex, visible.length - 1);
+
+  visible.forEach(([code, label], i) => {
+    const li = document.createElement("li");
+    li.className = "dd-item" + (i === activeIndex ? " active" : "");
+    li.id = `opt-${code}`;
+    li.setAttribute("role", "option");
+    li.setAttribute("aria-selected", code === currentCode ? "true" : "false");
+    li.dataset.index = i;
+
+    const name = document.createElement("span");
+    name.textContent = label;
+    const tick = document.createElement("span");
+    tick.className = "tick";
+    tick.textContent = "✓";
+
+    li.append(name, tick);
+    li.addEventListener("mousemove", () => setActive(i));
+    li.addEventListener("click", e => {
+      e.stopPropagation();
+      chooseLanguage(code);
+    });
+    ddList.appendChild(li);
+  });
+
+  ddSearch.setAttribute("aria-activedescendant", `opt-${visible[activeIndex][0]}`);
+}
+
+function setActive(i) {
+  if (visible.length === 0) return;
+  activeIndex = (i + visible.length) % visible.length;
+  ddList.querySelectorAll(".dd-item").forEach((li, idx) =>
+    li.classList.toggle("active", idx === activeIndex));
+  const el = ddList.querySelector(`.dd-item[data-index="${activeIndex}"]`);
+  if (el) el.scrollIntoView({ block: "nearest" });
+  ddSearch.setAttribute("aria-activedescendant", `opt-${visible[activeIndex][0]}`);
+}
+
+function openMenu() {
+  dd.classList.add("open");
+  ddBtn.setAttribute("aria-expanded", "true");
+  ddSearch.value = "";
+  activeIndex = Math.max(0, Object.keys(LANGS).indexOf(currentCode));
+  renderList("");
+  const current = ddList.querySelector('[aria-selected="true"]');
+  if (current) current.scrollIntoView({ block: "nearest" });
+  if (mobileMQ.matches) {
+    document.body.classList.add("sheet-open");
+    ddBackdrop.classList.add("show");
+  } else {
+    setTimeout(() => ddSearch.focus(), 0);
+  }
+}
+
+function closeMenu(returnFocus = false) {
+  dd.classList.remove("open");
+  document.body.classList.remove("sheet-open");
+  ddBackdrop.classList.remove("show");
+  ddBtn.setAttribute("aria-expanded", "false");
+  if (returnFocus && !mobileMQ.matches) ddBtn.focus();
+}
+
+ddBtn.addEventListener("click", e => {
+  e.stopPropagation();
+  if (dd.classList.contains("open")) closeMenu();
+  else openMenu();
+});
+
+document.getElementById("ddDone").addEventListener("click", e => {
+  e.stopPropagation();
+  closeMenu();
+});
+mobileMQ.addEventListener("change", () => closeMenu());
+
+ddSearch.addEventListener("input", () => {
+  activeIndex = 0;
+  renderList(ddSearch.value);
+});
+
+ddSearch.addEventListener("keydown", e => {
+  if (e.key === "ArrowDown") { e.preventDefault(); setActive(activeIndex + 1); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); setActive(activeIndex - 1); }
+  else if (e.key === "Enter") {
+    e.preventDefault();
+    if (visible[activeIndex]) chooseLanguage(visible[activeIndex][0]);
+  }
+  else if (e.key === "Escape") { e.preventDefault(); closeMenu(true); }
+});
+
+document.addEventListener("click", e => {
+  if (!dd.contains(e.target)) closeMenu();
+});
+
+function chooseLanguage(code) {
+  currentCode = code;
+  ddLabel.textContent = LANGS[code];
+  closeMenu(true);
+  wordInput.value = "";
+  showGreeting(code);
+}
+
+async function loadSvg(code) {
+  if (cache[code]) return cache[code];
+  const res = await fetch(`svg/hello-${code}.svg`);
+  if (!res.ok) throw new Error(`Could not load svg/hello-${code}.svg (${res.status})`);
+  const doc = new DOMParser().parseFromString(await res.text(), "image/svg+xml");
+  cache[code] = doc.documentElement;
+  return cache[code];
+}
+
+function buildGreetingSvg(src) {
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.setAttribute("class", "hello-svg");
+  svg.setAttribute("viewBox", src.getAttribute("viewBox"));
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+  svg.appendChild(document.importNode(src.querySelector("g"), true));
+  svg.querySelectorAll("path").forEach(p => p.setAttribute("pathLength", "1"));
+  return svg;
+}
+
+async function showGreeting(code) {
+  stage.innerHTML = '<div class="msg">Loading…</div>';
+  try {
+    const src = await loadSvg(code);
+    stage.replaceChildren(buildGreetingSvg(src));
+    playGreeting();
+  } catch (err) {
+    stage.innerHTML = "";
+    const msg = document.createElement("div");
+    msg.className = "msg";
+    msg.textContent = err.message;
+    stage.appendChild(msg);
+    console.error(err);
+  }
+}
+
+function playGreeting() {
+  const paths = stage.querySelectorAll("path");
+  paths.forEach(p => p.classList.remove("draw"));
+  void stage.getBoundingClientRect();
+  paths.forEach((p, i) => {
+    p.style.animationDelay = `${i * STAGGER_MS}ms`;
+    p.classList.add("draw");
+  });
+}
+
+function showWord(text) {
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.setAttribute("class", "hello-svg typed");
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+  const t = document.createElementNS(SVG_NS, "text");
+  t.setAttribute("x", "0");
+  t.setAttribute("y", "0");
+  t.setAttribute("font-size", "200");
+  t.setAttribute("font-family", "'Segoe Script', 'Brush Script MT', 'Snell Roundhand', cursive");
+  t.setAttribute("text-anchor", "start");
+  t.textContent = text;
+  svg.appendChild(t);
+
+  stage.replaceChildren(svg);
+
+  const b = t.getBBox();
+  const pad = 30;
+  svg.setAttribute("viewBox", `${b.x - pad} ${b.y - pad} ${b.width + pad * 2} ${b.height + pad * 2}`);
+
+  playWord();
+}
+
+function playWord() {
+  const svg = stage.querySelector("svg.typed");
+  if (!svg) return;
+  svg.classList.remove("run");
+  void svg.getBoundingClientRect();
+  svg.classList.add("run");
+}
+
+function play() {
+  if (stage.querySelector("svg.typed")) playWord();
+  else playGreeting();
+}
+
+let typingTimer;
+wordInput.addEventListener("input", () => {
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(() => {
+    const v = wordInput.value.trim();
+    if (v) showWord(v);
+    else showGreeting(currentCode);
+  }, 350);
+});
+
+typeForm.addEventListener("submit", e => {
+  e.preventDefault();
+  clearTimeout(typingTimer);
+  const v = wordInput.value.trim();
+  if (v) showWord(v);
+  else showGreeting(currentCode);
+});
+
+replayBtn.addEventListener("click", play);
+stage.addEventListener("click", play);
+
+// chay ma code ud nhat apple dont dmca me ud
+renderList("");
+ddLabel.textContent = LANGS[currentCode];
+showGreeting(currentCode);
+</script>
+</body>
+</html>
