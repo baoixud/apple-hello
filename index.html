@@ -23,9 +23,8 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  header, main, .typebar, footer { position: relative; z-index: 1; }
+  header, main, .typebar { position: relative; z-index: 1; }
 
-  /* headler */
   header {
     display: flex;
     align-items: center;
@@ -42,7 +41,7 @@
   .brand {
     font-size: 17px;
     font-weight: 600;
-    letter-spacing: -.01em;
+    letter-spacing: -.022em;
     color: #f5f5f7;
     white-space: nowrap;
   }
@@ -61,41 +60,40 @@
     border-radius: 6px;
     font: inherit;
     font-size: 13px;
+    font-weight: 400;
+    letter-spacing: -.01em;
+    line-height: 1;
     cursor: pointer;
     transition: color .18s, background .18s;
   }
   .btn:hover { color: #fff; background: rgba(255,255,255,.06); }
-  .btn svg { width: 14px; height: 14px; }
-  .btn:hover { background: rgba(255,255,255,.14); }
-  .btn:active { transform: scale(.97); }
   .btn:focus-visible { outline: 2px solid #8b8cf8; outline-offset: 2px; }
+  .btn svg { width: 14px; height: 14px; }
 
-  /* pop up smth*/
   .dd { position: relative; }
 
   .dd-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 36px;
-    padding: 0 10px 0 12px;
+    height: 32px;
+    padding: 0 8px;
     background: none;
     color: rgba(255,255,255,.8);
     border: 0;
     border-radius: 6px;
     font: inherit;
     font-size: 13px;
+    font-weight: 400;
+    letter-spacing: -.01em;
+    line-height: 1;
     cursor: pointer;
     transition: color .18s, background .18s;
   }
   .dd-btn:hover { color: #fff; background: rgba(255,255,255,.06); }
   .dd-btn:focus-visible { outline: 2px solid #8b8cf8; outline-offset: 2px; }
   .dd-btn .globe { width: 15px; height: 15px; color: rgba(255,255,255,.55); }
-  #ddLabel {
-    min-width: 0;
-    text-align: left;
-    white-space: nowrap;
-  }
+  #ddLabel { min-width: 0; text-align: left; white-space: nowrap; }
   .dd-chev {
     width: 10px;
     height: 6px;
@@ -148,7 +146,8 @@
     outline: none;
     color: #fff;
     font: inherit;
-    font-size: 15px;
+    font-size: 14px;
+    letter-spacing: -.01em;
   }
   .dd-search input::placeholder { color: rgba(255,255,255,.35); }
 
@@ -169,7 +168,8 @@
     gap: 8px;
     padding: 9px 10px;
     border-radius: 9px;
-    font-size: 14px;
+    font-size: 13px;
+    letter-spacing: -.01em;
     color: #d4d4da;
     cursor: pointer;
   }
@@ -182,7 +182,7 @@
   .dd-item[aria-selected="true"] .tick { visibility: visible; }
   .dd-empty {
     padding: 16px 10px;
-    font-size: 13px;
+    font-size: 12px;
     color: rgba(255,255,255,.4);
   }
 
@@ -192,7 +192,8 @@
     gap: 14px;
     padding: 9px 14px;
     border-top: 1px solid rgba(255,255,255,.08);
-    font-size: 11px;
+    font-size: 12px;
+    letter-spacing: -.005em;
     color: rgba(255,255,255,.4);
   }
   .kbd {
@@ -248,22 +249,6 @@
   }
   @keyframes draw { to { stroke-dashoffset: 0; } }
 
-  svg.typed text {
-    fill: none;
-    stroke: #fff;
-    stroke-width: 4;
-    stroke-linejoin: round;
-    stroke-dasharray: 5000;
-    stroke-dashoffset: 5000;
-  }
-  svg.typed.run text {
-    animation:
-      wordDraw 2.4s cubic-bezier(.45,.05,.55,.95) forwards,
-      wordFill .9s ease 2.1s forwards;
-  }
-  @keyframes wordDraw { to { stroke-dashoffset: 0; } }
-  @keyframes wordFill { to { fill: #fff; } }
-
   .typebar {
     display: flex;
     justify-content: center;
@@ -279,6 +264,7 @@
     color: #fff;
     font: inherit;
     font-size: 15px;
+    letter-spacing: -.01em;
     outline: none;
     transition: border-color .18s, background .18s;
   }
@@ -288,31 +274,11 @@
     background: rgba(255,255,255,.09);
   }
 
-  footer {
-    padding: 8px 20px 18px;
-    text-align: center;
-    font-size: 11px;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,.28);
-  }
-
-  .brand { font-size: 17px; font-weight: 600; letter-spacing: -.022em; }
-  .btn, .dd-btn { font-size: 13px; font-weight: 400; letter-spacing: -.01em; line-height: 1; }
-  .dd-item { font-size: 13px; letter-spacing: -.01em; }
-  .dd-search input { font-size: 14px; letter-spacing: -.01em; }
-  .dd-foot, .dd-empty { font-size: 12px; letter-spacing: -.005em; }
-  .typebar input { font-size: 15px; letter-spacing: -.01em; }
-  footer { font-size: 11px; letter-spacing: .08em; }
+  .dd-grab, .dd-sheet-head, .dd-backdrop { display: none; }
 
   @media (max-width: 560px) {
-    header { padding: 14px 16px; }
-    .dd-btn { min-width: 160px; }
-    .dd-panel { width: min(300px, 90vw); }
-    .dd-foot span.hide-sm { display: none; }
+    .dd-btn { min-width: 0; }
   }
-
-  .dd-grab, .dd-sheet-head, .dd-backdrop { display: none; }
 
   @media (max-width: 700px) {
     header {
@@ -339,8 +305,7 @@
 
     main { padding: 16px; }
     .typebar { padding: 4px 16px calc(12px + env(safe-area-inset-bottom)); }
-    .typebar input { width: 100%; font-size: 16px; } /* 16 px */
-    footer { padding: 4px 16px calc(12px + env(safe-area-inset-bottom)); }
+    .typebar input { width: 100%; font-size: 16px; }
 
     .dd-backdrop {
       display: block;
@@ -460,7 +425,7 @@
         <div class="dd-foot">
           <span><span class="kbd">↑</span> <span class="kbd">↓</span> to move</span>
           <span><span class="kbd">↵</span> to select</span>
-          <span class="hide-sm" style="margin-left:auto"><span class="kbd">Esc</span> to close</span>
+          <span style="margin-left:auto"><span class="kbd">Esc</span> to close</span>
         </div>
       </div>
     </div>
@@ -473,14 +438,12 @@
 </main>
 
 <form class="typebar" id="typeForm" autocomplete="off">
-  <input id="word" type="text" placeholder="Type any word and press Enter…" maxlength="40" />
+  <input id="word" type="text" placeholder="Type a word (a–z, 1–9) and press Enter…" maxlength="40" />
 </form>
-
 
 <div class="dd-backdrop" id="ddBackdrop"></div>
 
 <script>
-// languages
 const LANGS = {
   en: "English", ar: "Arabic", bg: "Bulgarian", ca: "Catalan", cs: "Czech",
   da: "Danish", de: "German", el: "Greek", es: "Spanish", fi: "Finnish",
@@ -493,6 +456,45 @@ const LANGS = {
   zh_HK: "Chinese (Hong Kong)"
 };
 
+const GLYPHS = {
+  a: { w: 340, s: [[[300,240],[240,190],[160,190],[110,240],[120,330],[200,370],[270,340],[300,280],[300,0]]] },
+  b: { w: 340, s: [[[80,700],[80,0]], [[80,250],[150,200],[230,195],[290,250],[300,320],[250,400],[170,410],[110,360],[80,300]]] },
+  c: { w: 300, s: [[[290,330],[240,400],[160,410],[100,360],[90,230],[120,160],[200,150],[270,190]]] },
+  d: { w: 340, s: [[[280,700],[280,0]], [[280,250],[220,195],[140,195],[80,250],[70,320],[120,400],[200,410],[250,360],[280,300]]] },
+  e: { w: 320, s: [[[60,230],[280,230],[280,300],[240,380],[160,410],[90,370],[60,280],[70,200],[130,160],[220,150],[280,180]]] },
+  f: { w: 260, s: [[[240,690],[190,700],[140,670],[120,600],[120,0]], [[60,410],[220,410]]] },
+  g: { w: 340, s: [[[290,250],[250,200],[170,190],[110,240],[110,330],[190,370],[270,340],[300,280]], [[300,420],[300,-60],[260,-150],[180,-180],[110,-150]]] },
+  h: { w: 330, s: [[[80,700],[80,0]], [[80,260],[140,200],[230,200],[280,250],[290,0]]] },
+  i: { w: 120, s: [[[60,420],[60,0]], [[60,560],[62,566]]] },
+  j: { w: 150, s: [[[110,420],[110,-60],[70,-150],[20,-170]], [[110,560],[112,566]]] },
+  k: { w: 300, s: [[[80,700],[80,0]], [[260,420],[100,200]], [[140,260],[270,0]]] },
+  l: { w: 120, s: [[[60,700],[60,0]]] },
+  m: { w: 440, s: [[[60,420],[60,0]], [[60,320],[110,390],[180,400],[220,340],[225,0]], [[225,320],[280,390],[350,400],[385,340],[390,0]]] },
+  n: { w: 330, s: [[[80,420],[80,0]], [[80,260],[140,200],[230,200],[280,250],[290,0]]] },
+  o: { w: 340, s: [[[170,410],[100,380],[70,310],[80,230],[140,190],[220,200],[270,250],[280,320],[240,390],[170,410]]] },
+  p: { w: 340, s: [[[80,420],[80,-200]], [[80,250],[150,200],[230,195],[290,250],[300,320],[250,400],[170,410],[110,360],[80,300]]] },
+  q: { w: 340, s: [[[290,420],[290,-200]], [[290,250],[220,195],[140,195],[80,250],[70,320],[120,400],[200,410],[250,360],[290,300]]] },
+  r: { w: 240, s: [[[80,420],[80,0]], [[80,300],[120,240],[180,210],[230,210]]] },
+  s: { w: 280, s: [[[240,360],[200,400],[130,410],[80,370],[90,310],[160,265],[230,230],[260,170],[220,120],[140,120],[80,160]]] },
+  t: { w: 240, s: [[[120,640],[120,80],[160,20],[220,20]], [[60,420],[220,420]]] },
+  u: { w: 330, s: [[[80,420],[80,170],[130,120],[210,120],[270,170]], [[280,420],[280,0]]] },
+  v: { w: 320, s: [[[60,420],[160,0],[260,420]]] },
+  w: { w: 460, s: [[[40,420],[120,0],[220,320],[320,0],[400,420]]] },
+  x: { w: 320, s: [[[60,420],[260,0]], [[260,420],[60,0]]] },
+  y: { w: 320, s: [[[60,420],[160,0]], [[260,420],[160,20],[90,-80],[60,-160]]] },
+  z: { w: 310, s: [[[60,410],[250,410],[60,0],[260,0]]] },
+
+  1: { w: 200, s: [[[60,560],[130,700],[130,0]]] },
+  2: { w: 300, s: [[[70,560],[130,680],[210,700],[270,650],[265,560],[200,460],[70,0],[290,0]]] },
+  3: { w: 300, s: [[[60,650],[130,700],[220,690],[270,620],[230,540],[140,510],[240,470],[285,380],[240,280],[150,250],[70,290]]] },
+  4: { w: 330, s: [[[230,700],[50,220],[300,220]], [[230,220],[230,0]]] },
+  5: { w: 300, s: [[[260,700],[90,700],[80,400]], [[80,400],[170,430],[250,400],[275,300],[260,150],[180,110],[90,140],[60,190]]] },
+  6: { w: 300, s: [[[250,640],[190,700],[120,650],[70,450],[70,200],[110,120],[190,110],[250,170],[250,250],[190,330],[110,320],[70,270]]] },
+  7: { w: 300, s: [[[60,700],[280,700],[140,0]]] },
+  8: { w: 300, s: [[[150,400],[90,440],[80,560],[150,700],[220,560],[210,440],[150,400],[70,350],[60,200],[150,0],[240,200],[230,350],[150,400]]] },
+  9: { w: 300, s: [[[240,450],[220,330],[170,290],[100,320],[80,420],[110,490],[180,520],[240,470],[250,380],[230,240],[170,100],[100,40],[60,70]]] }
+};
+
 const SVG_NS = "http://www.w3.org/2000/svg";
 const STAGGER_MS = 300;
 
@@ -502,18 +504,17 @@ const ddBtn     = document.getElementById("ddBtn");
 const ddLabel   = document.getElementById("ddLabel");
 const ddSearch  = document.getElementById("ddSearch");
 const ddList    = document.getElementById("ddList");
+const ddBackdrop = document.getElementById("ddBackdrop");
+const mobileMQ  = window.matchMedia("(max-width: 700px)");
 const replayBtn = document.getElementById("replay");
 const typeForm  = document.getElementById("typeForm");
 const wordInput = document.getElementById("word");
-const ddBackdrop = document.getElementById("ddBackdrop");
-const mobileMQ = window.matchMedia("(max-width: 700px)");
 
 const cache = {};
 let currentCode = "en";
-let visible = [];   
+let visible = [];
 let activeIndex = 0;
 
-/*pop up lemu */
 function renderList(query = "") {
   const q = query.trim().toLowerCase();
   visible = Object.entries(LANGS).filter(([code, label]) =>
@@ -668,48 +669,95 @@ async function showGreeting(code) {
 
 function playGreeting() {
   const paths = stage.querySelectorAll("path");
+  if (!paths.length) return;
+  const step = Math.min(STAGGER_MS, 6000 / paths.length);
   paths.forEach(p => p.classList.remove("draw"));
   void stage.getBoundingClientRect();
   paths.forEach((p, i) => {
-    p.style.animationDelay = `${i * STAGGER_MS}ms`;
+    p.style.animationDelay = `${i * step}ms`;
     p.classList.add("draw");
   });
 }
 
-function showWord(text) {
-  const svg = document.createElementNS(SVG_NS, "svg");
-  svg.setAttribute("class", "hello-svg typed");
-  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-
-  const t = document.createElementNS(SVG_NS, "text");
-  t.setAttribute("x", "0");
-  t.setAttribute("y", "0");
-  t.setAttribute("font-size", "200");
-  t.setAttribute("font-family", "'Segoe Script', 'Brush Script MT', 'Snell Roundhand', cursive");
-  t.setAttribute("text-anchor", "start");
-  t.textContent = text;
-  svg.appendChild(t);
-
-  stage.replaceChildren(svg);
-
-  const b = t.getBBox();
-  const pad = 30;
-  svg.setAttribute("viewBox", `${b.x - pad} ${b.y - pad} ${b.width + pad * 2} ${b.height + pad * 2}`);
-
-  playWord();
+function smoothPath(pts) {
+  if (pts.length === 1) {
+    const [x, y] = pts[0];
+    return `M${x} ${y} L${x + 0.01} ${y + 0.01}`;
+  }
+  let d = `M${pts[0][0]} ${pts[0][1]}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[i + 2] || p2;
+    const c1x = p1[0] + (p2[0] - p0[0]) / 6;
+    const c1y = p1[1] + (p2[1] - p0[1]) / 6;
+    const c2x = p2[0] - (p3[0] - p1[0]) / 6;
+    const c2y = p2[1] - (p3[1] - p1[1]) / 6;
+    d += ` C${c1x} ${c1y} ${c2x} ${c2y} ${p2[0]} ${p2[1]}`;
+  }
+  return d;
 }
 
-function playWord() {
-  const svg = stage.querySelector("svg.typed");
-  if (!svg) return;
-  svg.classList.remove("run");
-  void svg.getBoundingClientRect();
-  svg.classList.add("run");
+function buildWord(text) {
+  const GAP = 70;
+  const SPACE = 200;
+  let x = 0;
+  const placed = [];
+
+  for (const ch of text) {
+    if (ch === " ") { x += SPACE; continue; }
+    const glyph = GLYPHS[ch.toLowerCase()];
+    if (!glyph) continue;
+    placed.push({ glyph, x });
+    x += glyph.w + GAP;
+  }
+  if (!placed.length) return null;
+
+  const W = x - GAP;
+  const svg = document.createElementNS(SVG_NS, "svg");
+  svg.setAttribute("class", "hello-svg");
+  svg.setAttribute("viewBox", `-40 -760 ${W + 80} 1000`);
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+  const flip = document.createElementNS(SVG_NS, "g");
+  flip.setAttribute("transform", "scale(1,-1)");
+
+  placed.forEach(({ glyph, x: lx }) => {
+    const group = document.createElementNS(SVG_NS, "g");
+    group.setAttribute("transform", `translate(${lx},0)`);
+    glyph.s.forEach(stroke => {
+      const p = document.createElementNS(SVG_NS, "path");
+      p.setAttribute("d", smoothPath(stroke));
+      p.setAttribute("pathLength", "1");
+      p.setAttribute("stroke-width", "60");
+      p.setAttribute("stroke-linecap", "round");
+      p.setAttribute("stroke-linejoin", "round");
+      group.appendChild(p);
+    });
+    flip.appendChild(group);
+  });
+
+  svg.appendChild(flip);
+  return svg;
+}
+
+function showWord(text) {
+  const svg = buildWord(text);
+  if (!svg) {
+    stage.innerHTML = "";
+    const msg = document.createElement("div");
+    msg.className = "msg";
+    msg.textContent = "Use letters a–z or digits 1–9";
+    stage.appendChild(msg);
+    return;
+  }
+  stage.replaceChildren(svg);
+  playGreeting();
 }
 
 function play() {
-  if (stage.querySelector("svg.typed")) playWord();
-  else playGreeting();
+  playGreeting();
 }
 
 let typingTimer;
@@ -733,7 +781,6 @@ typeForm.addEventListener("submit", e => {
 replayBtn.addEventListener("click", play);
 stage.addEventListener("click", play);
 
-// chay ma code ud nhat apple dont dmca me ud
 renderList("");
 ddLabel.textContent = LANGS[currentCode];
 showGreeting(currentCode);
